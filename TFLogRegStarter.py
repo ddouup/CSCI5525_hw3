@@ -60,7 +60,7 @@ train_op = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimi
 
 
 with tf.Session() as sess:
-    writer = tf.summary.FileWriter('graphs/' , sess.graph)
+    writer = tf.summary.FileWriter('./graphs/LogReg' , sess.graph)
 
     start_time = time.time()
     sess.run(tf.global_variables_initializer())
@@ -71,7 +71,7 @@ with tf.Session() as sess:
         for _ in range(n_batches):
             X_batch, Y_batch = mnist.train.next_batch(batch_size)
             # TO-DO: run optimizer + fetch loss_batch
-            _, loss_batch = sess.run([train_op, loss], feed_dict={X: X_batch, Y: Y_batch})
+            op, loss_batch = sess.run([train_op, loss], feed_dict={X: X_batch, Y: Y_batch})
 
             total_loss += loss_batch
         print('Average loss epoch {0}: {1}'.format(i, total_loss / n_batches))
