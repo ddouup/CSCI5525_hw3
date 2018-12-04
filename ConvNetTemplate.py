@@ -122,9 +122,9 @@ with tf.variable_scope('fc') as scope:
 with tf.variable_scope('softmax_linear') as scope:
     # this you should know. get logits without softmax
     # you need to create weights and biases
-    w2 = tf.get_variable('weights', [1024,10],
+    w2 = tf.get_variable('weights', [1024,N_CLASSES],
                              initializer=tf.truncated_normal_initializer())
-    b2 = tf.get_variable('biases', [10],
+    b2 = tf.get_variable('biases', [N_CLASSES],
                              initializer=tf.random_normal_initializer())
 
     logits = tf.nn.xw_plus_b(fc, w2, b2, name='logits')
