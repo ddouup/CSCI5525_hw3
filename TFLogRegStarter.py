@@ -60,6 +60,8 @@ train_op = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimi
 
 
 with tf.Session() as sess:
+    writer = tf.summary.FileWriter('graphs/' , sess.graph)
+
     start_time = time.time()
     sess.run(tf.global_variables_initializer())
     n_batches = int(mnist.train.num_examples / batch_size)
