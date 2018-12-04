@@ -25,16 +25,17 @@ mnist = input_data.read_data_sets('/data/mnist', one_hot=True)
 # therefore, each image is represented with a 1x784 tensor
 # there are 10 classes for each image, corresponding to digits 0 - 9.
 # Features are of the type float, and labels are of the type int
-X = tf.placeholder(dtype=tf.float32, shape=[batch_size,784], name='X')
-Y = tf.placeholder(dtype=tf.int32, shape=[batch_size,10], name='y')
+X = tf.placeholder(dtype=tf.float32, shape=[None,784], name='X')
+Y = tf.placeholder(dtype=tf.int32, shape=[None,10], name='y')
 
 
 # Step 3: create weights and bias
 # weights and biases are initialized to 0
 # shape of w depends on the dimension of X and Y so that Y = X * w + b
 # shape of b depends on Y
-W = tf.Variable(tf.truncated_normal(shape=[784, 10], stddev=0.1), name='weights')
-b = tf.Variable(tf.constant(0.1, shape=[10]), name='bias')
+W = tf.Variable(tf.zeros(shape=[784, 10]), name='weights')
+b = tf.Variable(tf.zeros(shape=[10]), name='bias')
+
 
 
 # Step 4: build model
@@ -43,7 +44,6 @@ b = tf.Variable(tf.constant(0.1, shape=[10]), name='bias')
 # to get the probability distribution of possible label of the image
 # DO NOT DO SOFTMAX HERE
 logits = tf.nn.xw_plus_b(X, W, b)
-#logits = X*w+b
 
 
 # Step 5: define loss function
@@ -51,12 +51,12 @@ logits = tf.nn.xw_plus_b(X, W, b)
 # use the method:
 # tf.nn.softmax_cross_entropy_with_logits(logits, Y)
 # then use tf.reduce_mean to get the mean loss of the batch
-losses = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y), name='losses')
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y), name='loss')
 
 
 # Step 6: define training op
 # using gradient descent to minimize loss
-train_op = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(losses)
+train_op = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(loss)
 
 
 with tf.Session() as sess:
@@ -69,7 +69,7 @@ with tf.Session() as sess:
         for _ in range(n_batches):
             X_batch, Y_batch = mnist.train.next_batch(batch_size)
             # TO-DO: run optimizer + fetch loss_batch
-            loss_batch = sess.run(losses, feed_dict={X: X_batch, Y: Y_batch})
+            _, loss_batch = sess.run([train_op, loss], feed_dict={X: X_batch, Y: Y_batch})
 
             total_loss += loss_batch
         print('Average loss epoch {0}: {1}'.format(i, total_loss / n_batches))
